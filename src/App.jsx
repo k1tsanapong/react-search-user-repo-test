@@ -1,29 +1,34 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 function App() {
+
   const gitHub_token = import.meta.env.VITE_GithubTOKEN;
-  const [count, setCount] = useState(0);
 
-  const [search, setSearch] = useState("");
-  const [all_repos, setRepo] = useState({ repos: [] });
-
+  const [all_users, setAllUsers] = useState({ users: [] });
   const [loading, setLoading] = useState(false);
+  const [width, setWidth] = useState(window.innerWidth);
+  const [isFirstTime, setIsFirstTime] = useState(true);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
 
   async function handleSubmit(e) {
+
+    setIsFirstTime(false)
     setLoading(true);
-    setRepo({ repos: [] });
+    setAllUsers({ users: [] });
 
     e.preventDefault();
 
     const form = e.target;
     const formData = new FormData(form);
-
     const formJson = Object.fromEntries(formData.entries());
-    console.log(formJson);
 
-    const url = "https://api.github.com/search/users?q=";
+    const url = "https://api.github.com/search/users";
 
     const myHeaders = new Headers();
     myHeaders.append("Accept", "application/vnd.github+json");
@@ -36,18 +41,18 @@ function App() {
       redirect: "follow",
     };
 
-    // console.log(form)
-    // console.log(formData)
-
     fetch(
-      `https://api.github.com/search/users?q=${formJson.theSearch}`,
+      `${url}?q=${formJson.theSearch}&per_page=12`,
       requestOptions
     )
       .then((response) => response.json())
       .then((result) => {
-        setRepo({
-          repos: result.items,
+        setAllUsers({
+          users: result.items,
         });
+
+
+        console.log(all_users)
 
         setLoading(false);
       })
@@ -56,15 +61,15 @@ function App() {
 
   return (
     <>
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", flexWrap: "wrap" }}>
         <div
-          className="github-logo"
           style={{ flexGrow: 1, textAlign: "center" }}
         >
           <img src="/gitHub_logo_2013.webp" />
         </div>
 
-        <div className="the-search" style={{ flexGrow: 1 }}>
+
+        <div style={{ flexGrow: 1, justifyItems: width <= 800 ? 'center': 'start', marginBottom: "1rem"}}>
           <h1>Quiz using GitHub API v3</h1>
           <p>
             Copy by <span style={{ color: "green" }}>Kitsanapong Warit</span>
@@ -88,18 +93,20 @@ function App() {
         ></div>
       )}
 
+      {isFirstTime == false && all_users.users.length == 0 && loading == false && <div style={{justifySelf:"center"}}><img src="https://media1.tenor.com/m/jotyiHEoUGUAAAAC/anime.gif" /> </div>}
+
       <div className="grid-container">
-        {all_repos.repos.map((repo) => (
-          <div className="grid-item" key={repo.id}>
+        {all_users.users.map((users) => (
+          <div className="grid-item" key={users.id}>
             <div style={{ display: "flex", flexGrow: "2" }}>
               <div style={{ alignContent: "center" }}>
-                <img src={repo.avatar_url} alt="Avatar" class="avatar" />
+                <img src={users.avatar_url} alt="Avatar" class="avatar" />
               </div>
-              <div style={{ alignContent: "center" }}>{repo.login} &nbsp;</div>
+              <div style={{ alignContent: "center" }}>{users.login} &nbsp;</div>
 
               <a
                 style={{ alignContent: "center" }}
-                href={repo.html_url}
+                href={users.html_url}
                 target="_blank"
               >
                 <i class="material-icons">open_in_new</i>
@@ -115,7 +122,7 @@ function App() {
                 flexGrow: "1",
               }}
             >
-              Score : {repo.score}
+              Score : {users.score}
             </div>
 
             <div
@@ -136,8 +143,7 @@ function App() {
                 flexGrow: "1",
               }}
             >
-              <a href={repo.html_url + "?tab=repositories"} target="_blank">
-                {" "}
+              <a href={users.html_url + "?tab=repositories"} target="_blank">
                 VIEW REPOSITORY
               </a>
             </div>

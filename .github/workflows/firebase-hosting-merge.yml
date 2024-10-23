@@ -17,7 +17,7 @@ jobs:
       - name: Create env file
         run: |
           touch .env
-          echo API_ENDPOINT=${{ secrets2.VITE_GITHUB_TOKEN_2 }} >> .env
+          echo API_ENDPOINT=${{ secrets.VITE_GITHUB_TOKEN_2 }} >> .env
           cat .env
 
       - name: Build

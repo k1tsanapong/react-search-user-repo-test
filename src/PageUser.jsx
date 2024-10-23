@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 
+import { Routes, Route, useParams } from "react-router-dom";
+
 function PageUser() {
+  let { login } = useParams();
+
+  console.log(login);
+
   const gitHub_token = import.meta.env.VITE_GithubTOKEN;
 
   const [all_repos, setAllrepos] = useState({ repos: [] });
@@ -12,14 +18,6 @@ function PageUser() {
     setIsFirstTime(false);
     setLoading(true);
     setAllrepos({ repos: [] });
-
-    const the_user = "microsoft";
-
-    // e.preventDefault();
-
-    // const form = e.target;
-    // const formData = new FormData(form);
-    // const formJson = Object.fromEntries(formData.entries());
 
     const url = "https://api.github.com/users";
 
@@ -34,15 +32,25 @@ function PageUser() {
       redirect: "follow",
     };
 
-    fetch(`${url}/${the_user}/repos?per_page=30`, requestOptions)
+    fetch(`${url}/${login}/repos?per_page=30`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
+        console.log(result.status);
+
+
+        if (result.status == "404")
+        {
+            setAllrepos({
+                repos: [],
+              });
+        }
+
+       else {
         setAllrepos({
-          repos: result,
-        });
+            repos: result,
+          });
 
-        console.log(result);
-
+       }
         setLoading(false);
       })
       .catch((error) => console.error(error));
@@ -104,11 +112,18 @@ function PageUser() {
 
   return (
     <>
-      {/* <div className="grid-container">
-        {all_repos.repos.map((repo) => ( <h1>{repo.id}</h1>))}
+      {loading && (
+        <div
+          style={{ justifySelf: "center", marginTop: "10rem" }}
+          class="loader"
+        ></div>
+      )}
 
-
-        </div> */}
+      {all_repos.repos.length == 0 && loading == false && (
+        <div style={{ justifySelf: "center" }}>
+          <img src="https://media1.tenor.com/m/jotyiHEoUGUAAAAC/anime.gif" />{" "}
+        </div>
+      )}
 
       <div className="grid-container">
         {all_repos.repos.map((repo) => (
@@ -170,17 +185,6 @@ function PageUser() {
                 <div>{repo.watchers_count}</div>
               </div>
             </div>
-
-            {/* <div
-
-              style={{
-                flexGrow: "1",
-                paddingLeft: "1rem",
-                paddingRight: "1rem",
-              }}
-            >
-              <hr />
-            </div> */}
 
             <div
               style={{

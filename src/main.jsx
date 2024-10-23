@@ -13,7 +13,7 @@ const router = createBrowserRouter([
     errorElement: <Page404 />,
   },
   {
-    path: "/about",
+    path: "/users/:login",
     element: <PageUser />,
   },
   // ส่วนของ path และ element เราสามารถเพิ่มมาอีกได้เรื่อย ๆ กรณีที่เรามีหลายเพจ

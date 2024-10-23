@@ -5,7 +5,7 @@ import SearchedUserCard from "./components/SearchedUserCard";
 import "./App.css";
 
 function PageHome() {
-  const gitHub_token = import.meta.env.VITE_GITHUB_TOKEN;
+  const gitHub_token = import.meta.env.VITE_GITHUB_TOKEN_2;
 
   const [all_users, setAllUsers] = useState({ users: [] });
   const [loading, setLoading] = useState(false);

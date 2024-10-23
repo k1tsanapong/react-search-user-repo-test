@@ -8,7 +8,7 @@ function PageUser() {
 
   console.log(login);
 
-  const gitHub_token = import.meta.env.VITE_GITHUB_TOKEN;
+  const gitHub_token = import.meta.env.VITE_GITHUB_TOKEN_2;
 
   const [all_repos, setAllrepos] = useState({ repos: [] });
   const [loading, setLoading] = useState(false);

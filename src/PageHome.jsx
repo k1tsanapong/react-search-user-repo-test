@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
+import SearchedUserCard from "./components/SearchedUserCard";
 import "./App.css";
+
 function PageHome() {
   const gitHub_token = import.meta.env.VITE_GithubTOKEN;
 
@@ -12,15 +14,12 @@ function PageHome() {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const PER_PAGE = 12
-
-  let query = searchParams.get("q");
+  const PER_PAGE = 100;
 
   useEffect(() => {
-
     let start_query = searchParams.get("q");
 
-    if(start_query){
+    if (start_query) {
       getTheSearch(start_query);
     }
 
@@ -38,8 +37,7 @@ function PageHome() {
     const formData = new FormData(form);
     const formJson = Object.fromEntries(formData.entries());
 
-
-    setSearchParams({"q": formJson.theSearch})   
+    setSearchParams({ q: formJson.theSearch });
 
     await getTheSearch(formJson.theSearch);
   }
@@ -47,7 +45,6 @@ function PageHome() {
   async function getTheSearch(search_user) {
     setIsFirstTime(false);
     setLoading(true);
-
 
     const url = "https://api.github.com/search/users";
 
@@ -65,19 +62,13 @@ function PageHome() {
     fetch(`${url}?q=${search_user}&per_page=${PER_PAGE}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
+        console.log(result.status);
 
-
-        console.log(result.status )
-
-        if(result.status == undefined)
-        {
+        if (result.status == undefined) {
           setAllUsers({
             users: result.items,
           });
-          
-        }
-
-        else {
+        } else {
           setAllUsers({
             users: [],
           });
@@ -88,7 +79,6 @@ function PageHome() {
         setLoading(false);
       })
       .catch((error) => console.error(error));
-    
   }
 
   return (
@@ -144,59 +134,7 @@ function PageHome() {
         )}
 
       <div className="grid-container">
-        {all_users.users.map((users) => (
-          <div className="grid-item" key={users.id}>
-            <div style={{ display: "flex", flexGrow: "2" }}>
-              <div style={{ alignContent: "center" }}>
-                <img src={users.avatar_url} alt="Avatar" className="avatar" />
-              </div>
-              <div style={{ alignContent: "center" }}>{users.login} &nbsp;</div>
-
-              <a
-                style={{ alignContent: "center" }}
-                href={users.html_url}
-                target="_blank"
-              >
-                <i className="material-icons">open_in_new</i>
-              </a>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                alignSelf: "end",
-                paddingRight: "1rem",
-                marginTop: "auto",
-                flexGrow: "1",
-              }}
-            >
-              Score : {users.score}
-            </div>
-
-            <div
-              style={{
-                flexGrow: "1",
-                paddingLeft: "1rem",
-                paddingRight: "1rem",
-              }}
-            >
-              <hr />
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                alignSelf: "center",
-                color: "blue",
-                flexGrow: "1",
-              }}
-            >
-              <a href={"/users/" + users.login} target="_blank">
-                VIEW REPOSITORY
-              </a>
-            </div>
-          </div>
-        ))}
+        {all_users.users.map((user) => SearchedUserCard(user))}
       </div>
     </>
   );

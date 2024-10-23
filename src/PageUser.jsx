@@ -75,7 +75,12 @@ function PageUser() {
   function getDownloadFile(url) {
     const myHeaders = new Headers();
     // myHeaders.append("Accept", "application/vnd.github+json");
-    myHeaders.append("Authorization", `Bearer ${gitHub_token}`);
+    myHeaders.append("Accept", "application/vnd.github+json");
+    myHeaders.append("Authorization", `token ${gitHub_token}`);
+    myHeaders.append("X-GitHub-Api-Version", "2022-11-28");
+    myHeaders.append("Access-Control-Allow-Origin", "*");
+    myHeaders.append("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+    myHeaders.append("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     // myHeaders.append("X-GitHub-Api-Version", "2022-11-28");
 
     const requestOptions = {
@@ -97,6 +102,9 @@ function PageUser() {
     //     return languages;
     //   })
     //   .catch((error) => console.error(error));
+  
+
+    url = 'https://corsproxy.io/?' + encodeURIComponent('https://api.github.com/repos/k1tsanapong/react-search-user-repo-test/zipball');
 
     fetch(url, requestOptions)
       .then((res) => res.blob())
@@ -115,7 +123,7 @@ function PageUser() {
       {loading && (
         <div
           style={{ justifySelf: "center", marginTop: "10rem" }}
-          class="loader"
+          className="loader"
         ></div>
       )}
 
@@ -194,9 +202,12 @@ function PageUser() {
                 flexGrow: "1",
               }}
             >
-              {/* <a href={repo.downloads_url + "/zipball"}>VIEW REPOSITORY</a> */}
-              {/* <input type="button" value="kim"  /> */}
-            </div>
+              {/* <a href={"https://corsproxy.io/?"+encodeURIComponent(repo.url+"/zipball")} target="_blank">VIEW REPOSITORY</a> */}
+              <a href={repo.url+"/zipball"} target="_blank">Download</a>
+
+              {/* https://corsproxy.io/?' + encodeURIComponent('https://api.github.com/repos/k1tsanapong/react-search-user-repo-test/zipball' */}
+              {/* <button type="button" onClick={getDownloadFile}>Click Me!</button> */}
+              </div>
           </div>
         ))}
       </div>

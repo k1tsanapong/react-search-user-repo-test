@@ -30,7 +30,6 @@ function PageHome() {
   }, []);
 
   async function handleSubmit(e) {
-    setLoading(true);
     setAllUsers({ users: [] });
 
     e.preventDefault();
@@ -47,6 +46,7 @@ function PageHome() {
 
   async function getTheSearch(search_user) {
     setIsFirstTime(false);
+    setLoading(true);
 
 
     const url = "https://api.github.com/search/users";
@@ -131,7 +131,7 @@ function PageHome() {
       {loading && (
         <div
           style={{ justifySelf: "center", marginTop: "10rem" }}
-          class="loader"
+          className="loader"
         ></div>
       )}
 
@@ -148,7 +148,7 @@ function PageHome() {
           <div className="grid-item" key={users.id}>
             <div style={{ display: "flex", flexGrow: "2" }}>
               <div style={{ alignContent: "center" }}>
-                <img src={users.avatar_url} alt="Avatar" class="avatar" />
+                <img src={users.avatar_url} alt="Avatar" className="avatar" />
               </div>
               <div style={{ alignContent: "center" }}>{users.login} &nbsp;</div>
 
@@ -157,7 +157,7 @@ function PageHome() {
                 href={users.html_url}
                 target="_blank"
               >
-                <i class="material-icons">open_in_new</i>
+                <i className="material-icons">open_in_new</i>
               </a>
             </div>
 

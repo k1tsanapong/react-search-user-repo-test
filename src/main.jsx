@@ -16,7 +16,6 @@ const router = createBrowserRouter([
     path: "/users/:login",
     element: <PageUser />,
   },
-  // ส่วนของ path และ element เราสามารถเพิ่มมาอีกได้เรื่อย ๆ กรณีที่เรามีหลายเพจ
 ]);
 
 createRoot(document.getElementById("root")).render(
